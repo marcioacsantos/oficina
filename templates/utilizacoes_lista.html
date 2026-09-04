@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Utilizações{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h3><i class="fa-solid fa-clock-rotate-left"></i> {{ 'Todas as Utilizações' if current_user_perfil == 'Administrador' else 'As Minhas Utilizações' }}</h3>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover bg-white align-middle">
+    <thead>
+      <tr>
+        <th>Equipamento</th>
+        {% if current_user_perfil == 'Administrador' %}<th>Utilizador</th>{% endif %}
+        <th>Início</th><th>Fim</th><th>Observações</th><th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in registos %}
+      <tr>
+        <td>{{ r.designacao }}</td>
+        {% if current_user_perfil == 'Administrador' %}<td>{{ r.utilizador_nome }}</td>{% endif %}
+        <td>{{ r.data_inicio }}</td>
+        <td>{{ r.data_fim or "—" }}</td>
+        <td>{{ r.observacoes or "-" }}</td>
+        <td>
+          {% if not r.data_fim %}
+          <form method="POST" action="{{ url_for('terminar_utilizacao', ut_id=r.id_utilizacao) }}">
+            <button class="btn btn-sm btn-outline-success"><i class="fa-solid fa-stop"></i> Terminar</button>
+          </form>
+          {% else %}
+          <span class="badge badge-status bg-secondary"><i class="fa-solid fa-check"></i> Concluído</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="empty-state"><i class="fa-solid fa-inbox"></i>Sem registos.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

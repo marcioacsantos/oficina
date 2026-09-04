@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Relatórios{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h3><i class="fa-solid fa-chart-column"></i> Relatórios de Utilização</h3>
+</div>
+
+<div class="row g-3">
+
+  {% if current_user_perfil == 'Administrador' %}
+  <div class="col-md-4">
+    <div class="card stat-card h-100">
+      <div class="card-body text-center d-flex flex-column">
+        <i class="fa-solid fa-list fa-2x mb-3 text-brand"></i>
+        <h5>Relatório Geral</h5>
+        <p class="text-muted small">Todas as utilizações registadas no sistema.</p>
+        <a class="btn btn-brand w-100 mt-auto" href="{{ url_for('gerar_relatorio', tipo='geral') }}">Gerar</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card stat-card h-100">
+      <div class="card-body text-center d-flex flex-column">
+        <i class="fa-solid fa-screwdriver-wrench fa-2x mb-3 text-brand"></i>
+        <h5>Por Equipamento</h5>
+        <form method="GET" action="{{ url_for('gerar_relatorio') }}" class="d-flex flex-column flex-grow-1">
+          <input type="hidden" name="tipo" value="equipamento">
+          <select name="equipamento_id" class="form-select mb-3" required>
+            {% for e in equipamentos %}
+            <option value="{{ e.id_equipamento }}">{{ e.designacao }}</option>
+            {% endfor %}
+          </select>
+          <button class="btn btn-brand w-100 mt-auto">Gerar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card stat-card h-100">
+      <div class="card-body text-center d-flex flex-column">
+        <i class="fa-solid fa-user fa-2x mb-3 text-brand"></i>
+        <h5>Por Utilizador</h5>
+        <form method="GET" action="{{ url_for('gerar_relatorio') }}" class="d-flex flex-column flex-grow-1">
+          <input type="hidden" name="tipo" value="utilizador">
+          <select name="utilizador_id" class="form-select mb-3" required>
+            {% for u in utilizadores %}
+            <option value="{{ u.id_utilizador }}">{{ u.nome }}</option>
+            {% endfor %}
+          </select>
+          <button class="btn btn-brand w-100 mt-auto">Gerar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card stat-card h-100">
+      <div class="card-body text-center d-flex flex-column">
+        <i class="fa-solid fa-euro-sign fa-2x mb-3 text-brand"></i>
+        <h5>Manutenções &amp; Custos</h5>
+        <p class="text-muted small">Histórico de manutenções e custos associados.</p>
+        <a class="btn btn-brand w-100 mt-auto" href="{{ url_for('gerar_relatorio', tipo='manutencoes') }}">Gerar</a>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="col-md-4">
+    <div class="card stat-card h-100">
+      <div class="card-body text-center d-flex flex-column">
+        <i class="fa-solid fa-user fa-2x mb-3 text-brand"></i>
+        <h5>O Meu Relatório</h5>
+        <p class="text-muted small">Relatório pessoal de utilizações de equipamentos.</p>
+        <a class="btn btn-brand w-100 mt-auto" href="{{ url_for('gerar_relatorio') }}">Gerar</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card h-100">
+      <div class="card-body d-flex align-items-center gap-3">
+        <i class="fa-solid fa-circle-info text-muted fa-lg"></i>
+        <p class="text-muted small mb-0">
+          Relatórios gerais, por equipamento e por outros utilizadores estão
+          disponíveis apenas para Administradores.
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

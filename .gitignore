@@ -1,0 +1,42 @@
+# --- Segredos / configuração local ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- Ambientes virtuais ---
+venv/
+env/
+.venv/
+ENV/
+
+# --- Ficheiros de IDE / editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Sistema operativo ---
+.DS_Store
+Thumbs.db
+
+# --- Logs e ficheiros temporários ---
+*.log
+*.tmp
+
+# --- Ficheiros gerados pela aplicação em runtime ---
+/instance/
+
+# --- Bases de dados locais (se alguma vez usares SQLite em dev) ---
+*.sqlite3
+*.db

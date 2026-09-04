@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Histórico — {{ equipamento.designacao }}{% endblock %}
+{% block content %}
+<div class="page-header mb-1">
+  <h3><i class="fa-solid fa-clock-rotate-left"></i> {{ equipamento.designacao }}</h3>
+</div>
+<p class="page-subtitle">Nº Inventário: {{ equipamento.numero_inventario }}</p>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header"><i class="fa-solid fa-circle-info"></i> Ficha do Equipamento</div>
+      <div class="card-body">
+        <dl class="detail-list mb-0">
+          <div><dt>Categoria</dt><dd>{{ equipamento.nome_categoria or '-' }}</dd></div>
+          <div><dt>Localização</dt><dd>{{ equipamento.localizacao_nome or '-' }}</dd></div>
+          <div><dt>Fornecedor</dt><dd>{{ equipamento.fornecedor_nome or '-' }}</dd></div>
+          <div><dt>Data de Aquisição</dt><dd>{{ equipamento.data_aquisicao or '-' }}</dd></div>
+          <div><dt>Valor de Aquisição</dt><dd>{{ "%.2f €"|format(equipamento.valor_aquisicao) if equipamento.valor_aquisicao else '-' }}</dd></div>
+          <div><dt>Observações</dt><dd>{{ equipamento.observacoes or '-' }}</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header"><i class="fa-solid fa-screwdriver-wrench"></i> Manutenções</div>
+      <div class="card-body">
+        {% if current_user_perfil == 'Administrador' %}
+        <form method="POST" action="{{ url_for('nova_manutencao', eq_id=equipamento.id_equipamento) }}" class="row g-2 mb-3">
+          <div class="col-8">
+            <input type="text" class="form-control form-control-sm" name="descricao" placeholder="Motivo da manutenção..." required>
+          </div>
+          <div class="col-4">
+            <button class="btn btn-sm btn-brand w-100"><i class="fa-solid fa-plus"></i> Registar</button>
+          </div>
+        </form>
+        {% endif %}
+        <div class="maintenance-list">
+          {% for m in manutencoes %}
+          <div class="maintenance-item {% if not m.data_fim %}active{% endif %}">
+            <div>
+              <strong>{{ m.descricao }}</strong>
+              <div class="text-muted small">{{ m.data_inicio }} &rarr; {{ m.data_fim or "em curso" }}
+                {% if m.custo %} &middot; {{ "%.2f €"|format(m.custo) }}{% endif %}</div>
+            </div>
+            {% if not m.data_fim and current_user_perfil == 'Administrador' %}
+            <form method="POST" action="{{ url_for('concluir_manutencao', man_id=m.id_manutencao) }}" class="d-flex gap-1">
+              <input type="number" step="0.01" min="0" name="custo" class="form-control form-control-sm" placeholder="Custo €" style="width:100px;">
+              <button class="btn btn-sm btn-outline-success"><i class="fa-solid fa-check"></i></button>
+            </form>
+            {% endif %}
+          </div>
+          {% else %}
+          <p class="text-muted small mb-0">Sem registos de manutenção.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header"><i class="fa-solid fa-clock-rotate-left"></i> Histórico de Utilização</div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover bg-white mb-0">
+        <thead><tr><th>Utilizador</th><th>Início</th><th>Fim</th><th>Observações</th></tr></thead>
+        <tbody>
+          {% for h in historico %}
+          <tr>
+            <td>{{ h.utilizador_nome }}</td>
+            <td>{{ h.data_inicio }}</td>
+            <td>{{ h.data_fim or "— em curso —" }}</td>
+            <td>{{ h.observacoes or "-" }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="empty-state"><i class="fa-solid fa-inbox"></i>Sem registos de utilização.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<a href="{{ url_for('listar_equipamentos') }}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Utilizadores{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h3><i class="fa-solid fa-users-gear"></i> Utilizadores</h3>
+  <a href="{{ url_for('novo_utilizador') }}" class="btn btn-brand"><i class="fa-solid fa-plus"></i> Novo Utilizador</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover bg-white align-middle">
+    <thead><tr><th>Nome</th><th>Username</th><th>Perfil</th><th>Estado</th><th>Ações</th></tr></thead>
+    <tbody>
+      {% for u in utilizadores %}
+      <tr>
+        <td>{{ u.nome }}</td>
+        <td>{{ u.username }}</td>
+        <td><span class="badge bg-info text-dark">{{ u.nome_perfil }}</span></td>
+        <td>
+          {% if u.ativo %}<span class="badge bg-success">Ativo</span>{% else %}<span class="badge bg-secondary">Inativo</span>{% endif %}
+        </td>
+        <td>
+          <form method="POST" action="{{ url_for('toggle_utilizador', uid=u.id_utilizador) }}">
+            <button class="btn btn-sm btn-outline-secondary">
+              {{ 'Desativar' if u.ativo else 'Ativar' }}
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

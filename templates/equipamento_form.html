@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if equipamento else 'Novo' }} Equipamento{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h3><i class="fa-solid fa-screwdriver-wrench"></i> {{ 'Editar Equipamento' if equipamento else 'Novo Equipamento' }}</h3>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Designação *</label>
+        <input type="text" class="form-control" name="designacao" required value="{{ equipamento.designacao if equipamento else '' }}">
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Categoria</label>
+          <select class="form-select" name="id_categoria">
+            <option value="">-- Sem categoria --</option>
+            {% for c in categorias %}
+            <option value="{{ c.id_categoria }}" {% if equipamento and equipamento.id_categoria == c.id_categoria %}selected{% endif %}>{{ c.nome_categoria }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Nº Inventário / Série</label>
+          {% if equipamento %}
+          <input type="text" class="form-control" name="numero_inventario" value="{{ equipamento.numero_inventario }}">
+          {% else %}
+          <input type="text" class="form-control bg-body-secondary" value="{{ proximo_numero_inventario }}" readonly disabled>
+          <input type="hidden" name="numero_inventario" value="{{ proximo_numero_inventario }}">
+          <div class="form-text"><i class="fa-solid fa-circle-info me-1"></i>Gerado automaticamente ao guardar.</div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Estado</label>
+          <select class="form-select" name="id_estado">
+            {% for e in estados %}
+            <option value="{{ e.id_estado }}" {% if equipamento and equipamento.id_estado == e.id_estado %}selected{% endif %}>{{ e.nome_estado }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Localização</label>
+          <select class="form-select" name="id_localizacao">
+            <option value="">-- Sem localização --</option>
+            {% for l in localizacoes %}
+            <option value="{{ l.id_localizacao }}" {% if equipamento and equipamento.id_localizacao == l.id_localizacao %}selected{% endif %}>{{ l.designacao }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <hr class="my-4">
+      <p class="text-muted small text-uppercase fw-semibold mb-3"><i class="fa-solid fa-truck-field me-1"></i> Aquisição &amp; Fornecedor</p>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Fornecedor</label>
+          <select class="form-select" name="id_fornecedor">
+            <option value="">-- Sem fornecedor --</option>
+            {% for f in fornecedores %}
+            <option value="{{ f.id_fornecedor }}" {% if equipamento and equipamento.id_fornecedor == f.id_fornecedor %}selected{% endif %}>{{ f.nome }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Data de Aquisição</label>
+          <input type="date" class="form-control" name="data_aquisicao" value="{{ equipamento.data_aquisicao if equipamento else '' }}">
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Valor de Aquisição (€)</label>
+          <input type="number" step="0.01" min="0" class="form-control" name="valor_aquisicao" value="{{ equipamento.valor_aquisicao if equipamento else '' }}">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Observações</label>
+        <textarea class="form-control" name="observacoes" rows="2" placeholder="Notas gerais sobre o equipamento (opcional)">{{ equipamento.observacoes if equipamento else '' }}</textarea>
+      </div>
+
+      <button type="submit" class="btn btn-brand"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+      <a href="{{ url_for('listar_equipamentos') }}" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

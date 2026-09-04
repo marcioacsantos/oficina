@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Nova Reserva{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h3><i class="fa-solid fa-calendar-plus"></i> Nova Reserva de Equipamento</h3>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    {% if equipamentos %}
+    <form method="POST" id="formReserva">
+      <div class="mb-3">
+        <label class="form-label">Equipamento *</label>
+        <select class="form-select" name="equipamento_id" required>
+          <option value="" disabled {% if not form.get('equipamento_id') %}selected{% endif %}>Escolhe um equipamento...</option>
+          {% for e in equipamentos %}
+          <option value="{{ e.id_equipamento }}" {% if form.get('equipamento_id')|string == e.id_equipamento|string %}selected{% endif %}>{{ e.designacao }} ({{ e.numero_inventario }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-12 col-md-6">
+          <label class="form-label">Início *</label>
+          <div class="row g-2">
+            <div class="col-7">
+              <input type="date" class="form-control" id="dataInicioData" required>
+            </div>
+            <div class="col-5">
+              <input type="time" class="form-control" id="dataInicioHora" required>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label">Fim *</label>
+          <div class="row g-2">
+            <div class="col-7">
+              <input type="date" class="form-control" id="dataFimData" required>
+            </div>
+            <div class="col-5">
+              <input type="time" class="form-control" id="dataFimHora" required>
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" name="data_inicio" id="dataInicio" value="{{ form.get('data_inicio', '') }}">
+      <input type="hidden" name="data_fim" id="dataFim" value="{{ form.get('data_fim', '') }}">
+      <div class="mb-3">
+        <label class="form-label">Observações</label>
+        <textarea class="form-control" name="observacoes" rows="3" placeholder="Opcional">{{ form.get('observacoes', '') }}</textarea>
+      </div>
+      <button type="submit" class="btn btn-brand"><i class="fa-solid fa-calendar-check"></i> Criar Reserva</button>
+    </form>
+    <script>
+      (function () {
+        function preencher(valorCombinado, campoData, campoHora) {
+          if (!valorCombinado) return;
+          var partes = valorCombinado.split('T');
+          if (partes.length === 2) {
+            campoData.value = partes[0];
+            campoHora.value = partes[1];
+          }
+        }
+        var inicioData = document.getElementById('dataInicioData');
+        var inicioHora = document.getElementById('dataInicioHora');
+        var fimData = document.getElementById('dataFimData');
+        var fimHora = document.getElementById('dataFimHora');
+        preencher(document.getElementById('dataInicio').value, inicioData, inicioHora);
+        preencher(document.getElementById('dataFim').value, fimData, fimHora);
+
+        document.getElementById('formReserva').addEventListener('submit', function (ev) {
+          var inicioOk = inicioData.value && inicioHora.value;
+          var fimOk = fimData.value && fimHora.value;
+          if (!inicioOk || !fimOk) {
+            ev.preventDefault();
+            alert('Preenche a data e a hora de início e de fim.');
+            return;
+          }
+          document.getElementById('dataInicio').value = inicioData.value + 'T' + inicioHora.value;
+          document.getElementById('dataFim').value = fimData.value + 'T' + fimHora.value;
+        });
+      })();
+    </script>
+    {% else %}
+    <p class="text-muted mb-0">Não existem equipamentos disponíveis para reserva neste momento.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

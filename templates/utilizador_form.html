@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Novo Utilizador{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h3><i class="fa-solid fa-user-plus"></i> Novo Utilizador</h3>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Nome completo *</label>
+        <input type="text" class="form-control" name="nome" required>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Username *</label>
+          <input type="text" class="form-control" name="username" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Palavra-passe *</label>
+          <input type="password" class="form-control" name="password" required>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Perfil *</label>
+        <select class="form-select" name="id_perfil" required>
+          {% for p in perfis %}
+          <option value="{{ p.id_perfil }}">{{ p.nome_perfil }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-brand"><i class="fa-solid fa-floppy-disk"></i> Criar</button>
+      <a href="{{ url_for('listar_utilizadores') }}" class="btn btn-outline-secondary">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

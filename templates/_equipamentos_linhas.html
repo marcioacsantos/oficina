@@ -1,0 +1,33 @@
+{% for e in equipamentos %}
+<tr data-estado="{{ e.nome_estado }}">
+  <td>{{ e.designacao }}</td>
+  <td>{{ e.nome_categoria or '-' }}</td>
+  <td><span class="inv-code">{{ e.numero_inventario }}</span></td>
+  <td>
+    {% if e.nome_estado == 'Disponível' and e.reserva_fim %}<span class="badge badge-status bg-primary"><i class="fa-solid fa-calendar-day"></i> Reservado</span>
+    {% elif e.nome_estado == 'Disponível' %}<span class="badge badge-status bg-success"><i class="fa-solid fa-circle-check"></i> {{ e.nome_estado }}</span>
+    {% elif e.nome_estado == 'Em uso' %}<span class="badge badge-status bg-warning text-dark"><i class="fa-solid fa-gears"></i> {{ e.nome_estado }}</span>
+    {% elif e.nome_estado == 'Em manutenção' %}<span class="badge badge-status bg-info text-dark"><i class="fa-solid fa-screwdriver-wrench"></i> {{ e.nome_estado }}</span>
+    {% else %}<span class="badge badge-status bg-danger"><i class="fa-solid fa-triangle-exclamation"></i> {{ e.nome_estado }}</span>{% endif %}
+    {% if e.reserva_fim and e.nome_estado == 'Disponível' %}
+    <br><small class="text-muted"><i class="fa-solid fa-calendar-day"></i> {{ e.reserva_inicio.strftime('%d/%m %H:%M') }} - {{ e.reserva_fim.strftime('%d/%m %H:%M') }} ({{ e.reserva_utilizador }})</small>
+    {% endif %}
+  </td>
+  <td>{{ e.localizacao_nome or '-' }}</td>
+  <td class="text-nowrap">
+    <a href="{{ url_for('historico_equipamento', eq_id=e.id_equipamento) }}" class="btn btn-sm btn-outline-secondary" title="Histórico"><i class="fa-solid fa-clock-rotate-left"></i></a>
+    {% if current_user_perfil == 'Administrador' %}
+    <a href="{{ url_for('editar_equipamento', eq_id=e.id_equipamento) }}" class="btn btn-sm btn-outline-primary" title="Editar"><i class="fa-solid fa-pen"></i></a>
+    {% if e.nome_estado == 'Em uso' %}
+    <button class="btn btn-sm btn-outline-danger" title="Não é possível remover: equipamento em uso" disabled><i class="fa-solid fa-trash"></i></button>
+    {% else %}
+    <form method="POST" action="{{ url_for('remover_equipamento', eq_id=e.id_equipamento) }}" class="d-inline" data-no-spinner="true" onsubmit="return confirm('Remover este equipamento?');">
+      <button class="btn btn-sm btn-outline-danger" title="Remover"><i class="fa-solid fa-trash"></i></button>
+    </form>
+    {% endif %}
+    {% endif %}
+  </td>
+</tr>
+{% else %}
+<tr><td colspan="6" class="empty-state"><i class="fa-solid fa-magnifying-glass"></i>Nenhum equipamento encontrado.</td></tr>
+{% endfor %}

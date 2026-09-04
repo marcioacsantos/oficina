@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Equipamentos{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h3><i class="fa-solid fa-screwdriver-wrench"></i> Equipamentos e Materiais</h3>
+  {% if current_user_perfil == 'Administrador' %}
+  <a href="{{ url_for('novo_equipamento') }}" class="btn btn-brand"><i class="fa-solid fa-plus"></i> Novo Equipamento</a>
+  {% endif %}
+</div>
+
+<form class="row g-2 mb-3 align-items-center" method="GET" id="formPesquisaEquipamentos">
+  <div class="col-12 col-md-6">
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" class="form-control" name="q" id="pesquisaEquipamentos" value="{{ pesquisa }}" placeholder="Pesquisar por designação, categoria ou nº de inventário..." autocomplete="off">
+    </div>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-outline-secondary" type="submit">Pesquisar</button>
+  </div>
+  <div class="col-auto ms-md-auto">
+    <select id="filtroEstado" class="form-select">
+      <option value="">Todos os estados</option>
+      <option value="Disponível">Disponível</option>
+      <option value="Em uso">Em uso</option>
+      <option value="Avariado">Avariado</option>
+      <option value="Em manutenção">Em manutenção</option>
+    </select>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-hover align-middle bg-white" id="tabelaEquipamentos">
+    <thead>
+      <tr>
+        <th class="sortable" data-sort-type="text">Designação <i class="fa-solid fa-sort sort-icon"></i></th>
+        <th class="sortable" data-sort-type="text">Categoria <i class="fa-solid fa-sort sort-icon"></i></th>
+        <th class="sortable" data-sort-type="text">Nº Inventário <i class="fa-solid fa-sort sort-icon"></i></th>
+        <th class="sortable" data-sort-type="text">Estado <i class="fa-solid fa-sort sort-icon"></i></th>
+        <th class="sortable" data-sort-type="text">Localização <i class="fa-solid fa-sort sort-icon"></i></th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="corpoTabelaEquipamentos">
+      {% include "_equipamentos_linhas.html" %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

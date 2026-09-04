@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Reservas{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h3><i class="fa-solid fa-calendar-days"></i> {{ 'Todas as Reservas' if current_user_perfil == 'Administrador' else 'As Minhas Reservas' }}</h3>
+  <a href="{{ url_for('nova_reserva') }}" class="btn btn-brand"><i class="fa-solid fa-plus"></i> Nova Reserva</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover bg-white align-middle" id="tabelaReservas">
+    <thead>
+      <tr>
+        <th class="sortable" data-sort-type="text">Equipamento <i class="fa-solid fa-sort sort-icon"></i></th>
+        {% if current_user_perfil == 'Administrador' %}<th class="sortable" data-sort-type="text">Utilizador <i class="fa-solid fa-sort sort-icon"></i></th>{% endif %}
+        <th class="sortable" data-sort-type="text">Início <i class="fa-solid fa-sort sort-icon"></i></th>
+        <th class="sortable" data-sort-type="text">Fim <i class="fa-solid fa-sort sort-icon"></i></th>
+        <th>Observações</th>
+        <th>Estado</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reservas %}
+      <tr>
+        <td>{{ r.designacao }} <span class="inv-code">{{ r.numero_inventario }}</span></td>
+        {% if current_user_perfil == 'Administrador' %}<td>{{ r.utilizador_nome }}</td>{% endif %}
+        <td>{{ r.data_inicio }}</td>
+        <td>{{ r.data_fim }}</td>
+        <td>{{ r.observacoes or "-" }}</td>
+        <td>
+          {% if r.data_fim < agora %}<span class="badge badge-status bg-secondary"><i class="fa-solid fa-check"></i> Concluída</span>
+          {% elif r.data_inicio <= agora and r.data_fim >= agora %}<span class="badge badge-status bg-warning text-dark"><i class="fa-solid fa-hourglass-half"></i> Em curso</span>
+          {% else %}<span class="badge badge-status bg-success"><i class="fa-solid fa-calendar-check"></i> Agendada</span>{% endif %}
+        </td>
+        <td>
+          {% if r.data_fim >= agora %}
+          <form method="POST" action="{{ url_for('cancelar_reserva', res_id=r.id_reserva) }}" onsubmit="return confirm('Cancelar esta reserva?');">
+            <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-xmark"></i> Cancelar</button>
+          </form>
+          {% else %}
+          <span class="text-muted">—</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="empty-state"><i class="fa-solid fa-calendar-xmark"></i>Sem reservas.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

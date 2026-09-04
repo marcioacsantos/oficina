@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ titulo }} — Gestão de Oficina</title>
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo.svg') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-page d-flex align-items-center justify-content-center p-3">
+<div class="login-shell">
+
+  <div class="login-brand-panel">
+    <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Logótipo" class="login-brand-logo">
+    <h4>Gestão de Oficina</h4>
+    <p>Controlo de equipamentos, utilizações e relatórios num único lugar.</p>
+  </div>
+
+  <div class="login-card text-center">
+    <div class="mb-3">
+      <i class="fa-solid {% if codigo == 404 %}fa-map-signs{% elif codigo == 403 %}fa-lock{% elif codigo == 503 %}fa-plug-circle-xmark{% else %}fa-triangle-exclamation{% endif %}" style="font-size: 2.75rem; color: var(--brand);"></i>
+    </div>
+    <h5>{{ titulo }}</h5>
+    <p class="subtitle">{{ mensagem }}</p>
+
+    <div class="d-flex gap-2 justify-content-center mt-3">
+      <a href="{{ url_for('index') }}" class="btn btn-brand"><i class="fa-solid fa-house"></i> Ir para o início</a>
+      <button type="button" class="btn btn-outline-secondary" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Tentar de novo</button>
+    </div>
+
+    <p class="text-muted mt-4" style="font-size: 0.8rem;">Código do erro: {{ codigo }}</p>
+  </div>
+</div>
+</body>
+</html>
